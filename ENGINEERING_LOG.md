@@ -5,6 +5,31 @@ implementación. El más reciente arriba.
 
 ---
 
+## v0.11.0-rc.3 — Auditoría pre-deploy (P2)
+
+**Build acoplado al entorno (bloqueador de Vercel).** `clientEnv` era un IIFE que lanzaba
+si faltaban las `NEXT_PUBLIC_*`. Next 15 importa cada módulo de ruta en "Collecting page
+data", disparando el throw cuando el build no tiene variables (caso real en Vercel antes de
+configurarlas). El build local pasaba sólo porque yo inyectaba variables dummy. Arreglo:
+`clientEnv` no lanza al importar (safeParse con fallback a valores crudos + aviso en
+navegador); `getServerEnv()` mantiene validación estricta en runtime (no se ejecuta en
+build porque sólo se llama dentro de handlers).
+
+**Middleware redirigía las APIs.** El matcher incluía `/api`, así que sin sesión toda
+llamada a la API se redirigía a `/login`. Esto rompía `/api/mcp` (auth por token) y
+`/api/cron/run` (auth por `CRON_SECRET`), y devolvía HTML en vez de 401. Se excluyó `api/`
+del matcher; las rutas ya autentican por su cuenta.
+
+**Autorización multiusuario (SQL).** `supabase/tests/rls.sql` crea dos usuarios y verifica,
+como rol `authenticated`: aislamiento de lectura, que la consulta-guard del endpoint
+`respond` sobre una conversación ajena da 0 filas (regresión del IDOR de P0), que no se
+puede insertar como otro (WITH CHECK), ni actualizar/borrar filas ajenas, y que `private`
+y `mcp_tokens` están denegados. Nota de fidelidad: el test re-aplica el grant base de
+Supabase a `authenticated` y luego el `revoke` de `mcp_tokens`, replicando el orden real.
+
+**Contratos de endpoint.** Tests Vitest de los esquemas Zod (delivery, goal, evento,
+importación) para cubrir la validación de entrada de las rutas en CI.
+
 ## v0.11.0-rc.2 — Auditoría pre-deploy (P1: deps, build, CSP)
 
 **Upgrade de Next (14.2.35 → 15.5.20).** El `npm audit` mostró 1 crítica + 2 altas; las de

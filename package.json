@@ -1,6 +1,6 @@
 {
   "name": "keivis-assistant",
-  "version": "0.11.0-rc.2",
+  "version": "0.11.0-rc.3",
   "private": true,
   "description": "PWA privada de productividad, calendario, gimnasio e ingresos de delivery.",
   "scripts": {
@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:rls": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f supabase/tests/rls.sql"
   },
   "dependencies": {
     "@supabase/ssr": "0.5.2",

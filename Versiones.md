@@ -5,6 +5,7 @@ en `ENGINEERING_LOG.md`.
 
 | Versión | Fase | Fecha | Resumen |
 |---|---|---|---|
+| 0.11.0-rc.3 | Pre-deploy | 2026-07-16 | P2: build ya no depende de env (fix Vercel), middleware no redirige /api (fix MCP/cron), suite RLS multiusuario + regresión IDOR, contratos Zod y e2e de authz. |
 | 0.11.0-rc.2 | Pre-deploy | 2026-07-16 | P1: Next 15.5.20 + Vitest 4 (0 altas/críticas), versiones fijadas, npm ci reproducible, CSP y verificación de secretos. |
 | 0.11.0-rc.1 | Pre-deploy | 2026-07-16 | Auditoría: corregido IDOR P0 en el asistente; barrido de rutas service_role sin otros hallazgos. |
 | 0.11.0 | Fase 11 | 2026-07-16 | Endurecimiento: rate limiting, cabeceras, logger, accesibilidad, e2e y documentación final. Cumple criterios de aceptación. |

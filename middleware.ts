@@ -48,5 +48,5 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   // Excluye estáticos, imágenes, manifest y favicon.
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|offline.html|icons/|.*\\.(?:png|svg|ico|json|txt|xml|webmanifest)$).*)'],
+  matcher: ['/((?!api/|_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|offline.html|icons/|.*\\.(?:png|svg|ico|json|txt|xml|webmanifest)$).*)'],
 };

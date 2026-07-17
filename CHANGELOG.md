@@ -3,6 +3,23 @@
 Formato basado en *Keep a Changelog*. Fechas en zona America/New_York.
 Versionado por fase del proyecto (ver `Versiones.md`).
 
+## [0.11.0-rc.3] — Auditoría pre-deploy (P2)
+### Corregido (Bloqueadores de despliegue)
+- **Build en Vercel fallaba**: la validación de `NEXT_PUBLIC_*` lanzaba al importar el
+  módulo, y Next 15 importa las rutas al recolectar datos → el build moría sin variables.
+  Ahora `clientEnv` no lanza en build (cae a valores crudos); la validación estricta del
+  servidor sigue en runtime.
+- **Middleware redirigía `/api` a `/login`**: rompía `/api/mcp` (auth por token) y
+  `/api/cron/run` (auth por secreto), y hacía que las APIs devolvieran HTML en vez de 401.
+  Se excluyó `/api` del middleware; cada ruta gestiona su propia autenticación.
+### Añadido (Pruebas)
+- Suite SQL de **autorización multiusuario** (`supabase/tests/rls.sql`) con **regresión del
+  IDOR**: aislamiento de lectura, bloqueo de insert/update/delete cruzado, `private` y
+  `mcp_tokens` denegados. Ejecutada contra Postgres: todo pasa.
+- Pruebas de **contrato** de los esquemas Zod de los endpoints (Vitest, 10).
+- Pruebas e2e de autorización (401 en API/MCP, redirección de páginas) listas para staging.
+- `docs/INTEGRATION_VALIDATION.md` y script `test:rls`.
+
 ## [0.11.0-rc.2] — Auditoría pre-deploy (P1)
 ### Cambiado (Dependencias / build reproducible)
 - Next 14.2.35 → **15.5.20** (corrige todas las vulnerabilidades altas/críticas de Next:

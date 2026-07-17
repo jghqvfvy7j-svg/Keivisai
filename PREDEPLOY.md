@@ -18,9 +18,12 @@ completar todo lo siguiente y superar validación en staging.
 > explotable en runtime); se cierra al actualizar Next.
 
 ## P2 — Pruebas de endpoints e integraciones (pendiente)
-- [ ] Pruebas de integración de los route handlers (auth, 401/403/429, validación).
-- [ ] Validación real de OpenAI, Google Calendar, Gmail y MCP en staging.
-- [ ] Prueba de autorización multiusuario end-to-end (usuario A no accede a datos de B).
+- [x] Contratos de validación (Zod) de endpoints en Vitest; e2e de authz (401 API/MCP, redirect).
+- [~] Guía y checklist en `docs/INTEGRATION_VALIDATION.md` (requiere staging + credenciales).
+- [x] Autorización multiusuario a nivel BD (`supabase/tests/rls.sql`, incl. regresión IDOR) — pasa. E2E multiusuario listo para staging.
+
+> Hallazgos P2 (corregidos): build acoplado a env (rompía Vercel) y middleware que
+> redirigía `/api` a `/login` (rompía MCP y cron). Ver ENGINEERING_LOG.
 
 ## P3 — PWA y plataforma (pendiente)
 - [ ] Revisar manifest, iconos reales (192/512/maskable) y splash en iPhone.
