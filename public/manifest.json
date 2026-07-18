@@ -1,0 +1,15 @@
+{
+  "name": "GymTrack Pro",
+  "short_name": "GymTrack Pro",
+  "description": "AI-guided workouts, nutrition and progress in one app.",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#0a0b0d",
+  "theme_color": "#30d158",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
