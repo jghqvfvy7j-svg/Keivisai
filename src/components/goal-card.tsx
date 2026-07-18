@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/icon';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { computeGoalProgress, goalStatusLabel } from '@/lib/domain/goals';
@@ -54,7 +55,7 @@ export function GoalCard(props: GoalCardProps) {
           <div className="text-xs" style={{ color: 'rgb(var(--muted))' }}>{props.periodLabel}</div>
         </div>
         <button onClick={remove} disabled={busy} aria-label="Eliminar meta"
-          className="text-sm" style={{ color: 'rgb(var(--muted))' }}>✕</button>
+          className="text-sm" style={{ color: 'rgb(var(--muted))' }}><Icon name="x" size={16} /></button>
       </div>
 
       {computable && progress ? (

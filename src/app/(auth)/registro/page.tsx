@@ -26,28 +26,25 @@ export default function RegistroPage() {
       <p className="mb-6 text-sm" style={{ color: 'rgb(var(--muted))' }}>Keivis Assistant</p>
       <div className="space-y-3">
         <input
-          className="w-full rounded-xl border px-4 py-3"
-          style={{ borderColor: 'rgb(var(--border))', background: 'rgb(var(--surface))' }}
+          className="input"
           type="email" inputMode="email" autoComplete="email" placeholder="Correo"
           value={email} onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          className="w-full rounded-xl border px-4 py-3"
-          style={{ borderColor: 'rgb(var(--border))', background: 'rgb(var(--surface))' }}
+          className="input"
           type="password" autoComplete="new-password" placeholder="Contraseña (mín. 6)"
           value={password} onChange={(e) => setPassword(e.target.value)}
         />
-        {error ? <p role="alert" className="text-sm" style={{ color: 'rgb(var(--cat-delivery))' }}>{error}</p> : null}
+        {error ? <p role="alert" className="text-sm" style={{ color: 'rgb(var(--danger))' }}>{error}</p> : null}
         {msg ? <p className="text-sm" style={{ color: 'rgb(var(--cat-gym))' }}>{msg}</p> : null}
         <button
           onClick={onSubmit} disabled={loading}
-          className="min-h-[48px] w-full rounded-xl font-medium text-white disabled:opacity-60"
-          style={{ background: 'rgb(var(--cat-work))' }}
+          className="btn btn-primary w-full"
         >
           {loading ? 'Creando…' : 'Crear cuenta'}
         </button>
         <p className="text-center text-sm" style={{ color: 'rgb(var(--muted))' }}>
-          ¿Ya tienes cuenta? <Link href="/login" style={{ color: 'rgb(var(--cat-work))' }}>Entrar</Link>
+          ¿Ya tienes cuenta? <Link href="/login" style={{ color: 'rgb(var(--accent))' }}>Entrar</Link>
         </p>
       </div>
     </div>

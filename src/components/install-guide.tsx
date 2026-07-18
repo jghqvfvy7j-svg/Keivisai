@@ -27,7 +27,7 @@ export function InstallGuide() {
   if (state === 'standalone') {
     return (
       <div className="rounded-2xl p-6 text-center" style={{ background: 'rgb(var(--surface))' }}>
-        <p className="font-medium">Ya estás usando la app instalada 🎉</p>
+        <p className="font-medium">Ya estás usando la app instalada</p>
         <p className="mt-1 text-sm" style={{ color: 'rgb(var(--muted))' }}>
           Se está ejecutando en modo pantalla completa.
         </p>

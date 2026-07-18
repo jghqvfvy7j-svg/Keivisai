@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/icon';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -118,7 +119,7 @@ export function ScheduleImport() {
                   <div className="font-medium capitalize">{fmtDay(e.startsAt)} · {e.title}</div>
                   <div className="text-xs" style={{ color: 'rgb(var(--muted))' }}>{fmtHM(e.startsAt)} – {fmtHM(e.endsAt)}</div>
                 </div>
-                <button onClick={() => removeEvent(i)} aria-label="Quitar" style={{ color: 'rgb(var(--muted))' }}>✕</button>
+                <button onClick={() => removeEvent(i)} aria-label="Quitar" style={{ color: 'rgb(var(--muted))' }}><Icon name="x" size={16} /></button>
               </li>
             ))}
           </ul>

@@ -1,213 +1,159 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/*
-  ATLAS — Design System
-  Language: quiet premium. Near-black depth, hairline borders, one restrained
-  signal green (Apple-dark-mode green), warm amber for nutrition/energy.
-  Numbers read like instruments: tabular mono. Motion is physical and brief.
-*/
-:root,
-[data-theme="dark"] {
-  --bg: #0a0b0d;
-  --surface: #131417;
-  --surface-2: #1b1d21;
-  --surface-3: #24262c;
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --foreground: #f5f5f7;
-  --muted: #9ba0a8;
-  --muted-2: #8b9099;         /* AA: >=4.5:1 on cards, still clearly secondary */
+/* ============================================================================
+   Sistema de diseño — Keivis Assistant
+   Herramienta personal de operaciones e ingresos. Estética sobria, neutra y
+   precisa (tipo panel financiero/productividad), no decorativa.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+  --bg: 245 245 246;         /* fondo casi blanco, ligeramente frío */
+  --surface: 255 255 255;    /* tarjetas */
+  --surface-2: 249 249 250;  /* superficie sutil */
+  --border: 228 228 231;     /* hairline */
+  --text: 24 24 27;          /* tinta */
+  --muted: 113 113 122;      /* texto secundario */
 
-  /* signal colors (Apple dark-mode palette, restrained) */
-  --volt: #30d158;            /* primary signal green */
-  --volt-foreground: #04120a;
-  --coral: #ff9f0a;           /* energy / nutrition amber */
-  --coral-foreground: #1a1204;
-  --success: #30d158;
-  --danger: #ff453a;
-  --warning: #ffd60a;
-  --info: #64d2ff;
+  --primary: 24 24 27;       /* botón primario = tinta */
+  --primary-fg: 255 255 255;
+  --accent: 79 70 229;       /* indigo: enlaces, estado activo, foco */
+  --positive: 5 150 105;     /* verde reservado a dinero/éxito */
+  --danger: 220 38 38;       /* rojo: errores/destructivo */
 
-  /* chart-safe colors (readable on this theme) */
-  --chart-grid: rgba(255, 255, 255, 0.08);
-  --chart-axis: #7a808a;
+  /* Categorías (puntos/etiquetas discretas, desaturadas) */
+  --cat-work: 79 70 229;     /* trabajo (= acento) */
+  --cat-delivery: 13 148 136;/* delivery (teal) */
+  --cat-gym: 5 150 105;      /* gimnasio (esmeralda) */
+  --cat-goal: 217 119 6;     /* metas (ámbar) */
+  --cat-rest: 161 161 170;   /* descanso (gris) */
+  --cat-personal: 124 58 237;/* personal (violeta) */
 
-  --radius-sm: 0.625rem;
-  --radius: 1rem;
-  --radius-lg: 1.5rem;
+  --radius: 16px;
 }
 
-[data-theme="light"] {
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --surface-2: #f0f2f5;
-  --surface-3: #e6e9ee;
-  --border: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.16);
-  --foreground: #14151a;
-  --muted: #61656d;
-  --muted-2: #6b7079;         /* AA on white; still secondary */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: 9 9 11;
+    --surface: 24 24 27;
+    --surface-2: 32 32 36;
+    --border: 39 39 42;
+    --text: 250 250 250;
+    --muted: 161 161 170;
 
-  --volt: #1a9c43;            /* darker green for contrast on white */
-  --volt-foreground: #ffffff;
-  --coral: #e07800;
-  --coral-foreground: #ffffff;
-  --success: #1a9c43;
-  --danger: #d70015;
-  --warning: #b8860b;
-  --info: #0a84c2;
+    --primary: 250 250 250;
+    --primary-fg: 24 24 27;
+    --accent: 129 140 248;
+    --positive: 52 211 153;
+    --danger: 248 113 113;
 
-  --chart-grid: rgba(0, 0, 0, 0.08);
-  --chart-axis: #6b7178;
+    --cat-work: 129 140 248;
+    --cat-delivery: 45 212 191;
+    --cat-gym: 52 211 153;
+    --cat-goal: 251 191 36;
+    --cat-rest: 113 113 122;
+    --cat-personal: 167 139 250;
+  }
 }
 
-@theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-surface-3: var(--surface-3);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-2: var(--muted-2);
-
-  /* Alias tokens (alternate naming used by some components) */
-  --color-text: var(--foreground);
-  --color-text-2: var(--muted);
-  --color-text-3: var(--muted-2);
-  --color-hairline: var(--border);
-  --color-hairline-strong: var(--border-strong);
-  --color-elevated: var(--surface-2);
-
-  --color-volt: var(--volt);
-  --color-volt-foreground: var(--volt-foreground);
-  --color-coral: var(--coral);
-  --color-coral-foreground: var(--coral-foreground);
-  --color-success: var(--success);
-  --color-danger: var(--danger);
-
-  /* Aliases used across the UI (Button, Badge, BottomNav). These were renamed at
-     some point but never defined, which silently produced transparent
-     backgrounds: `bg-bad text-white` rendered white text on a white dialog, so
-     the "Leave" button was invisible. */
-  --color-signal: var(--volt);
-  --color-signal-ink: var(--volt-foreground);
-  --color-bad: var(--danger);
-  --color-warning: var(--warning);
-  --color-info: var(--info);
-  --color-chart-grid: var(--chart-grid);
-  --color-chart-axis: var(--chart-axis);
-
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius);
-  --radius-lg: var(--radius-lg);
-
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
-  --font-display: var(--font-display-src), -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: var(--font-mono-src), ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono",
-    Menlo, Consolas, monospace;
+html, body {
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-* {
-  border-color: var(--border);
-}
+body { padding-top: env(safe-area-inset-top); }
 
-html,
-body {
-  background: var(--bg);
-  color: var(--foreground);
-}
+h1, h2, h3 { letter-spacing: -0.02em; }
+h1 { font-size: 22px; font-weight: 650; }
+h2 { font-size: 16px; font-weight: 600; }
 
-body {
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: none;
-  font-feature-settings: "cv11", "ss01";
-}
+/* Números alineados: da el aire de panel financiero */
+.tabnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 
-::selection {
-  background: var(--volt);
-  color: var(--volt-foreground);
-}
-
-/* Instrument numerals — every stat, weight, timer */
-.font-score {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-.font-display {
-  font-family: var(--font-display);
-  letter-spacing: -0.035em;
-}
-
-/* Glass surface — headers, floating bars, sheets */
-.glass {
-  background: color-mix(in srgb, var(--surface) 78%, transparent);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  border: 1px solid var(--border);
-}
-
-/* Hairline dividers */
-.hairline-t { box-shadow: 0 -0.5px 0 var(--border-strong); }
-.hairline-b { box-shadow: 0 0.5px 0 var(--border-strong); }
-
-/* hide scrollbars on chip rows / carousels */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* safe-area padding (PWA / notch) */
-.pb-safe { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
-.pt-safe { padding-top: max(0.75rem, env(safe-area-inset-top)); }
-
-/* ---------- Motion ---------- */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes scale-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes shimmer {
-  from { background-position: 200% 0; }
-  to { background-position: -200% 0; }
-}
-@keyframes ring-fill {
-  from { stroke-dashoffset: var(--ring-circumference, 264); }
-}
-
-.animate-fade-up { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.animate-scale-in { animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.delay-1 { animation-delay: 60ms; }
-.delay-2 { animation-delay: 120ms; }
-.delay-3 { animation-delay: 180ms; }
-.delay-4 { animation-delay: 240ms; }
-.delay-5 { animation-delay: 300ms; }
-
-.skeleton {
-  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s linear infinite;
-}
-
-/* Interactive press feel */
-.pressable { transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s; }
-.pressable:active { transform: scale(0.97); }
-
-/* Card hover lift (desktop) */
-@media (hover: hover) {
-  .liftable { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s; }
-  .liftable:hover { transform: translateY(-2px); border-color: var(--border-strong); }
-}
-
-/* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up, .animate-scale-in, .skeleton { animation: none; }
-  .pressable:active, .liftable:hover { transform: none; }
+  * { animation: none !important; transition: none !important; }
 }
+
+/* ---- Primitivas reutilizables ---- */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+}
+
+.card {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: opacity .15s ease, background .15s ease, border-color .15s ease;
+  cursor: pointer;
+}
+.btn:disabled { opacity: .55; cursor: default; }
+.btn-primary { background: rgb(var(--primary)); color: rgb(var(--primary-fg)); }
+.btn-primary:active { opacity: .9; }
+.btn-secondary { background: rgb(var(--surface)); border-color: rgb(var(--border)); color: rgb(var(--text)); }
+.btn-secondary:active { background: rgb(var(--surface-2)); }
+.btn-danger { background: transparent; border-color: rgb(var(--danger)); color: rgb(var(--danger)); }
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgb(var(--border));
+  background: rgb(var(--surface));
+  color: rgb(var(--text));
+  font-size: 15px;
+}
+.input::placeholder { color: rgb(var(--muted)); }
+.input:focus { outline: none; border-color: rgb(var(--accent)); box-shadow: 0 0 0 3px rgb(var(--accent) / 0.15); }
+
+.metric { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgb(var(--muted));
+}
+.tag::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 10px;
+  color: rgb(var(--muted));
+}
+.icon-btn:active { background: rgb(var(--surface-2)); }
+
+/* ---- Accesibilidad ---- */
+.skip-link {
+  position: absolute; left: -999px; top: 0; z-index: 100;
+  background: rgb(var(--text)); color: rgb(var(--bg));
+  padding: 8px 12px; border-radius: 8px;
+}
+.skip-link:focus { left: 8px; top: calc(env(safe-area-inset-top) + 8px); }
+:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }

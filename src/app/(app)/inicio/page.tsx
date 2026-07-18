@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { dayRange, weekRange } from '@/lib/domain/week';
 import { perHourCents, perMileCents } from '@/lib/domain/money';
+import { Icon } from '@/components/icon';
 import { TodayTimeline } from '@/components/today-timeline';
 import { WeekSummary, type WeekTotals } from '@/components/week-summary';
 import { WeekReport } from '@/components/week-report';
@@ -118,8 +119,10 @@ export default async function InicioPage() {
       </header>
 
       {pendingEmails ? (
-        <a href="/correos" className="block rounded-2xl p-3 text-sm" style={{ background: 'rgb(var(--cat-goal) / 0.12)' }}>
-          📩 {pendingEmails} correo(s) importante(s) pendiente(s)
+        <a href="/correos" className="card flex items-center gap-3 text-sm" style={{ paddingTop: 12, paddingBottom: 12 }}>
+          <Icon name="mail" size={18} style={{ color: 'rgb(var(--accent))' }} />
+          <span><span className="tabnum font-medium">{pendingEmails}</span> correo(s) importante(s) pendiente(s)</span>
+          <Icon name="chevronRight" size={16} className="ml-auto" style={{ color: 'rgb(var(--muted))' }} />
         </a>
       ) : null}
 

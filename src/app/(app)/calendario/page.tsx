@@ -1,3 +1,5 @@
+import { Icon } from '@/components/icon';
+
 export default function Page() {
   return (
     <div className="space-y-4">
@@ -5,9 +7,11 @@ export default function Page() {
       <p className="text-sm" style={{ color: 'rgb(var(--muted))' }}>
         Fase 3+: vistas día / semana / mes / agenda, semana desde domingo.
       </p>
-      <a href="/importar" className="block rounded-2xl p-4 text-sm font-medium"
-        style={{ background: 'rgb(var(--surface))', color: 'rgb(var(--cat-work))' }}>
-        📷 Importar horario desde una foto
+      <a href="/importar" className="card flex items-center gap-3 text-sm font-medium"
+        style={{ color: 'rgb(var(--accent))' }}>
+        <Icon name="camera" size={20} />
+        Importar horario desde una foto
+        <Icon name="chevronRight" size={18} className="ml-auto" />
       </a>
     </div>
   );

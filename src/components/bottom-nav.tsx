@@ -1,13 +1,14 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Icon, type IconName } from './icon';
 
-const items = [
-  { href: '/inicio', label: 'Inicio', icon: '🏠' },
-  { href: '/calendario', label: 'Calendario', icon: '🗓️' },
-  { href: '/delivery', label: 'Delivery', icon: '🚗' },
-  { href: '/metas', label: 'Metas', icon: '🎯' },
-  { href: '/asistente', label: 'Asistente', icon: '💬' },
+const items: { href: string; label: string; icon: IconName }[] = [
+  { href: '/inicio', label: 'Inicio', icon: 'home' },
+  { href: '/calendario', label: 'Agenda', icon: 'calendar' },
+  { href: '/delivery', label: 'Delivery', icon: 'truck' },
+  { href: '/metas', label: 'Metas', icon: 'target' },
+  { href: '/asistente', label: 'Asistente', icon: 'message' },
 ];
 
 export function BottomNav() {
@@ -15,9 +16,9 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed bottom-0 inset-x-0 z-40 border-t"
+      className="fixed bottom-0 inset-x-0 z-40 border-t backdrop-blur"
       style={{
-        background: 'rgb(var(--surface))',
+        background: 'rgb(var(--surface) / 0.9)',
         borderColor: 'rgb(var(--border))',
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
@@ -30,11 +31,20 @@ export function BottomNav() {
               <Link
                 href={it.href}
                 aria-current={active ? 'page' : undefined}
-                className="flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-xs"
-                style={{ color: active ? 'rgb(var(--cat-work))' : 'rgb(var(--muted))' }}
+                className="relative flex min-h-[56px] flex-col items-center justify-center gap-1"
+                style={{ color: active ? 'rgb(var(--text))' : 'rgb(var(--muted))' }}
               >
-                <span aria-hidden className="text-lg leading-none">{it.icon}</span>
-                <span>{it.label}</span>
+                {active ? (
+                  <span
+                    aria-hidden
+                    className="absolute top-0 h-0.5 w-8 rounded-full"
+                    style={{ background: 'rgb(var(--text))' }}
+                  />
+                ) : null}
+                <Icon name={it.icon} size={22} />
+                <span className="text-[11px]" style={{ fontWeight: active ? 600 : 400 }}>
+                  {it.label}
+                </span>
               </Link>
             </li>
           );

@@ -24,14 +24,16 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Entrar</h1>
-      <p className="mb-6 text-sm" style={{ color: 'rgb(var(--muted))' }}>
-        Keivis Assistant
-      </p>
+      <div className="mb-8">
+        <div className="eyebrow">Keivis Assistant</div>
+        <h1 className="mt-1">Entrar</h1>
+        <p className="mt-1 text-sm" style={{ color: 'rgb(var(--muted))' }}>
+          Tu panel de turnos, ingresos y metas.
+        </p>
+      </div>
       <div className="space-y-3">
         <input
-          className="w-full rounded-xl border px-4 py-3"
-          style={{ borderColor: 'rgb(var(--border))', background: 'rgb(var(--surface))' }}
+          className="input"
           type="email"
           inputMode="email"
           autoComplete="email"
@@ -40,8 +42,7 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          className="w-full rounded-xl border px-4 py-3"
-          style={{ borderColor: 'rgb(var(--border))', background: 'rgb(var(--surface))' }}
+          className="input"
           type="password"
           autoComplete="current-password"
           placeholder="Contraseña"
@@ -49,23 +50,16 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         {error ? (
-          <p role="alert" className="text-sm" style={{ color: 'rgb(var(--cat-delivery))' }}>
+          <p role="alert" className="text-sm" style={{ color: 'rgb(var(--danger))' }}>
             {error}
           </p>
         ) : null}
-        <button
-          onClick={onSubmit}
-          disabled={loading}
-          className="min-h-[48px] w-full rounded-xl font-medium text-white disabled:opacity-60"
-          style={{ background: 'rgb(var(--cat-work))' }}
-        >
+        <button onClick={onSubmit} disabled={loading} className="btn btn-primary w-full">
           {loading ? 'Entrando…' : 'Entrar'}
         </button>
-        <p className="text-center text-sm" style={{ color: 'rgb(var(--muted))' }}>
+        <p className="pt-1 text-center text-sm" style={{ color: 'rgb(var(--muted))' }}>
           ¿No tienes cuenta?{' '}
-          <Link href="/registro" style={{ color: 'rgb(var(--cat-work))' }}>
-            Crear cuenta
-          </Link>
+          <Link href="/registro" style={{ color: 'rgb(var(--accent))' }}>Crear cuenta</Link>
         </p>
       </div>
     </div>
