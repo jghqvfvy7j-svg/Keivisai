@@ -1,126 +1,133 @@
 # Changelog
 
-> **Documento PÚBLICO.** Resumen breve de cada versión, orientado al producto.
-> Detalle funcional en `RELEASE_NOTES.md`; detalle técnico en `ENGINEERING_LOG.md`
-> (interno); decisiones en `DECISIONS.md` (interno); historial completo en español
-> en `VERSIONES.md` (interno).
+Formato basado en *Keep a Changelog*. Fechas en zona America/New_York.
+Versionado por fase del proyecto (ver `Versiones.md`).
 
-Formato basado en [Keep a Changelog](https://keepachangelog.com).
-Categorías: **Added**, **Changed**, **Fixed**, **Removed**, **Security**, **Performance**.
+## [0.11.0-rc.4] — Rediseño UX profesional + guía de credenciales
+### Cambiado (Diseño)
+- Nuevo sistema de diseño sobrio: paleta neutra desaturada, tipografía nativa de iPhone,
+  números tabulares (aire de panel financiero), tarjetas con borde hairline y clases
+  reutilizables (`.card/.btn/.input/.eyebrow/.metric/.tag`).
+- **Íconos SVG de línea** en vez de emojis en toda la app (nav, tarjetas, indicadores).
+  Barra de navegación con estado activo en tinta e indicador superior.
+- Botón primario en tinta (near-black); indigo reservado a enlaces/estado activo/foco;
+  verde sólo para dinero positivo. Pantallas de acceso rediseñadas.
+### Añadido
+- `docs/CREDENCIALES.md`: guía paso a paso para obtener cada llave y URL oficial
+  (Supabase, OpenAI, Google Calendar/Gmail, secretos generados, MCP).
 
-## Versionado semántico (SemVer)
+## [0.11.0-rc.3] — Auditoría pre-deploy (P2)
+### Corregido (Bloqueadores de despliegue)
+- **Build en Vercel fallaba**: la validación de `NEXT_PUBLIC_*` lanzaba al importar el
+  módulo, y Next 15 importa las rutas al recolectar datos → el build moría sin variables.
+  Ahora `clientEnv` no lanza en build (cae a valores crudos); la validación estricta del
+  servidor sigue en runtime.
+- **Middleware redirigía `/api` a `/login`**: rompía `/api/mcp` (auth por token) y
+  `/api/cron/run` (auth por secreto), y hacía que las APIs devolvieran HTML en vez de 401.
+  Se excluyó `/api` del middleware; cada ruta gestiona su propia autenticación.
+### Añadido (Pruebas)
+- Suite SQL de **autorización multiusuario** (`supabase/tests/rls.sql`) con **regresión del
+  IDOR**: aislamiento de lectura, bloqueo de insert/update/delete cruzado, `private` y
+  `mcp_tokens` denegados. Ejecutada contra Postgres: todo pasa.
+- Pruebas de **contrato** de los esquemas Zod de los endpoints (Vitest, 10).
+- Pruebas e2e de autorización (401 en API/MCP, redirección de páginas) listas para staging.
+- `docs/INTEGRATION_VALIDATION.md` y script `test:rls`.
 
-Las versiones siguen `MAJOR.MINOR.PATCH`:
-- **Major** — cambios incompatibles (rompen algo existente).
-- **Minor** — nuevas funciones compatibles hacia atrás.
-- **Patch** — correcciones y mejoras menores, compatibles.
+## [0.11.0-rc.2] — Auditoría pre-deploy (P1)
+### Cambiado (Dependencias / build reproducible)
+- Next 14.2.35 → **15.5.20** (corrige todas las vulnerabilidades altas/críticas de Next:
+  cache poisoning en RSC, XSS con nonces de CSP, varias DoS). Código adaptado a las APIs
+  asíncronas de Next 15 (`cookies()`, `params`).
+- Vitest 2 → **4.1.10** (corrige la crítica de dev del servidor UI y las de vite/esbuild).
+- Versiones directas **fijadas** (exactas), `engines.node >=20.11`, `.nvmrc` y `npm ci` limpio.
+### Añadido (Seguridad)
+- **Content-Security-Policy** (estricta en producción) además de HSTS/X-Frame-Options/etc.
+- Verificado que ningún secreto llega al bundle del cliente.
+### Notas
+- `npm audit`: 0 altas/críticas. Quedan 2 moderadas por el `postcss` que Next fija
+  internamente (dependencia de **build**, procesa sólo CSS propio → no explotable). Se
+  resolverá cuando Next actualice su postcss; no se fuerza para no saltar a Next 16.
 
----
+## [0.11.0-rc.1] — Auditoría pre-deploy
+> Release candidate. Aún NO es 1.0.0: pendiente el checklist de `PREDEPLOY.md`.
+### Corregido (Seguridad · P0)
+- IDOR en `POST /api/assistant/respond`: un `conversationId` del cliente se usaba con
+  `service_role` (que omite RLS) sin verificar propiedad, permitiendo escribir en y leer
+  conversaciones ajenas. Ahora se verifica `id + user_id` antes de usarlo (403 si no) y el
+  historial se filtra también por `user_id`.
+### Auditado
+- Barrido de todas las rutas con `service_role`: el resto ya acotaba por `user_id` o
+  resolvía el usuario de la sesión/token. Sin otros IDOR.
 
-## [1.0.60] — 2026-07-17
-### Changed
-- Mejor legibilidad del texto secundario (gris) para cumplir el contraste mínimo
-  de accesibilidad (WCAG AA) en modo oscuro y claro.
+## [0.11.0] — Fase 11 · Endurecimiento
+### Añadido
+- Rate limiting por usuario en rutas sensibles (asistente, MCP, Gmail, importar, cron manual).
+- Cabeceras de seguridad (HSTS, X-Frame-Options, nosniff, Referrer/Permissions-Policy).
+- Logger estructurado con filtrado por nivel.
+- Accesibilidad: enlace "saltar al contenido" y foco visible.
+- Pruebas e2e con Playwright y documentación final (ARCHITECTURE, SECURITY, PRIVACY, DEPLOYMENT).
+### Estado
+- Se cumplen los criterios de aceptación del roadmap (Fases 0–11). Candidata a 1.0.0.
 
-## [1.0.59] — 2026-07-17
-### Added
-- La tarjeta "Your week" de Progreso ahora también enciende sus números y lleva
-  el detalle de acento, en línea con el inicio.
+## [0.10.0] — Fase 10 · Servidor MCP (ChatGPT)
+### Añadido
+- Servidor MCP para conectar ChatGPT a la app (herramientas de lectura y registro).
+- Tokens de acceso revocables (hasheados) gestionados desde Configuración.
+- Las acciones destructivas no se exponen por MCP; cada llamada se valida y audita.
+- Guía de conexión en `docs/MCP.md`. La app funciona sin MCP.
 
-## [1.0.58] — 2026-07-17
-### Added
-- El inicio ahora "enciende": tus números de la semana cuentan al cargar y la
-  tarjeta principal lleva un detalle de acento sutil. (Se desactiva con
-  reduce-motion.)
+## [0.9.0] — Fase 9 · Automatizaciones y centro de actividad
+### Añadido
+- Procesos automáticos silenciosos: recálculo de metas, detección de sesiones
+  incompletas, eventos duplicados y conflictos de horario.
+- Recomendación de bloque de DoorDash (3 h tras el gimnasio/trabajo).
+- **Centro de actividad** para ver automatizaciones y cambios recientes.
+- Cron por hora (Vercel) protegido y botón "Ejecutar ahora". Sin notificaciones.
 
-## [1.0.57] — 2026-07-17
-### Changed
-- Nueva tipografía de la app (títulos Space Grotesk, números JetBrains Mono) para
-  una identidad más distintiva y premium, manteniendo el estilo oscuro.
-### Added
-- Micro-animaciones: el anillo de calorías se dibuja y sus números cuentan al
-  cargar (se desactivan si tienes reduce-motion).
+## [0.8.0] — Fase 8 · Gmail
+### Añadido
+- Conexión con Gmail (solo lectura) desde Configuración.
+- Clasificación de correos importantes (seguridad, facturas, trabajo, promociones…).
+- Indicador discreto en el dashboard: "N correos importantes pendientes" (sin notificaciones).
+- Botones "importante"/"no importante" que afinan la clasificación (aprende del feedback).
 
-## [1.0.56] — 2026-07-17
-### Changed
-- El resumen de "hoy" en Nutrición ahora es un anillo circular con las calorías
-  que te faltan al centro y barras de macros frente a tu meta.
+## [0.7.0] — Fase 7 · Importar horario por foto
+### Añadido
+- Subir una foto del horario y extraer la fila de "Keivis" con un modelo de visión.
+- **Vista previa editable**: revisas y quitas eventos; nada se guarda sin confirmar.
+- Detección de días libres (OFF) y aviso de códigos/fechas no reconocidos.
 
-## [1.0.55] — 2026-07-14
-### Added
-- Check-in proactivo por push: un resumen semanal (domingos) de tu nutrición
-  frente a tu meta (calorías y proteína). Se puede desactivar con la preferencia
-  de notificaciones de nutrición.
+## [0.6.0] — Fase 6 · Google Calendar
+### Añadido
+- Conexión con Google Calendar mediante OAuth desde **Configuración**.
+- Sincronización de eventos hacia Google **sin recordatorios ni alarmas**.
+- Cifrado de los tokens de Google (AES-256-GCM) aislados del navegador.
+- Botón "Sincronizar ahora" y "Desconectar" en Ajustes.
 
-## [1.0.54] — 2026-07-14
-### Added
-- Resiliencia offline: tu plan de entrenamiento activo queda guardado en el
-  dispositivo y se puede ver sin conexión en una página de respaldo.
+## [0.5.0] — Fase 5 · Asistente
+### Añadido
+- Asistente de chat en español que entiende lenguaje natural.
+- Puede registrar delivery, consultar la semana, crear metas y eventos.
+- Las acciones destructivas (borrar) piden **confirmación** antes de ejecutarse.
+- Historial de conversación persistente y registro de auditoría.
 
-## [1.0.53] — 2026-07-14
-### Added
-- Ahora puedes editar el texto de lo que tu coach recuerda, y ver una etiqueta
-  de tipo (lesión, preferencia, PR, meta) por cada memoria.
-### Changed
-- "Borrar todo" en la memoria del coach pide confirmación (dos toques).
+## [0.4.0] — Fase 4 · PWA
+### Añadido
+- Instalable en iPhone ("Agregar a pantalla de inicio"), pantalla guiada.
+- Funciona sin conexión: los registros se guardan y se envían al reconectar.
+- Aviso de "Nueva versión disponible" y banner de "sin conexión".
 
-## [1.0.52] — 2026-07-14
-### Changed
-- El coach ahora aconseja usando tus números reales de nutrición: compara tu
-  promedio de calorías y proteína contra tu meta diaria (déficit/superávit).
+## [0.3.0] — Fase 3 · Metas y reportes
+### Añadido
+- Metas diarias, semanales y mensuales con barra de progreso y estado.
+- Reporte semanal con comparación vs. la semana anterior y gráfico diario.
 
-## [1.0.51] — 2026-07-14
-### Changed
-- Las imágenes de ejercicios ahora se sirven desde tu propio Supabase (bucket
-  público) en vez de hotlink a jsDelivr. Misma imagen, más control y sin
-  dependencia externa. Reversible.
-### Performance
-- Menos dependencia de un CDN de terceros para cargar imágenes.
+## [0.2.0] — Fase 2 · Delivery
+### Añadido
+- Registro rápido de sesiones de DoorDash con vista previa de $/hora y $/milla.
+- Estadísticas semanales: mejor día, mejor zona, promedios; lista de sesiones.
 
-## [1.0.50] — 2026-07-14
-### Security
-- Nueva auditoría de seguridad de solo lectura (`auditoria_seguridad.sql`) que
-  detecta tablas sin RLS, tablas sin políticas y buckets públicos inesperados.
-- Rastreo de errores (Sentry) opcional: reporta crashes con stack trace. Sin DSN
-  configurado queda deshabilitado y la app funciona igual.
-### Added
-- Los error boundaries reportan a Sentry cuando hay un DSN configurado.
-
-## [1.0.49] — 2026-07-14
-### Changed
-- Sistema de documentación y control de versiones normalizado y ampliado
-  (CHANGELOG, RELEASE_NOTES, ENGINEERING_LOG, VERSIONES) y nuevo `DECISIONS.md`.
-  Sin cambios en la app.
-
-## [1.0.48] — 2026-07-14
-### Removed
-- Función de animaciones de ejercicios (Everkinetic). La calidad de las imágenes
-  no cumplía el estándar del producto. Sin impacto para el usuario: los
-  ejercicios mantienen sus fotos actuales.
-
-## [1.0.45] — 2026-07-14
-### Fixed
-- Guardar en Configuración ya no puede tumbar la app con "Algo salió mal": un
-  fallo de red al guardar ahora muestra un aviso y deja seguir.
-- El tooltip de la gráfica de Calorie intake se lee en modo oscuro (antes salía
-  en negro).
-### Security
-- Todas las llamadas a Server Actions desde el cliente capturan el rechazo de la
-  promesa, evitando que un fallo de transporte exponga el error boundary.
-
-## [1.0.44] — 2026-07-14
-### Changed
-- "Net Energy" ahora es **Calorie intake**: compara lo comido contra tu meta
-  diaria (verde bajo la meta, naranja sobre la meta), con promedios y macros.
-### Added
-- Las fotos enviadas al coach quedan guardadas en el chat.
-### Fixed
-- El chat del coach abre en el último mensaje, con flecha para bajar, y oculta la
-  barra inferior al escribir.
-### Removed
-- El dato de "quemado" estimado (confuso y poco fiable sin un wearable).
-
----
-
-_Nota: 1.0.46 y 1.0.47 introdujeron animaciones de ejercicios que se retiraron en
-1.0.48 sin haber llegado a producción; se detallan en `VERSIONES.md`._
+## [0.1.0] — Fases 0–1 · Fundaciones
+### Añadido
+- Inicio de sesión, base de datos con seguridad por usuario, dashboard "Hoy" y
+  resumen semanal, navegación inferior estilo app y cálculos base probados.

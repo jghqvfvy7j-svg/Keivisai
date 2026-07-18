@@ -19,19 +19,27 @@ se resuelve del token, nunca del modelo. Cada llamada se valida con Zod y se aud
 
 ## Requisitos
 
-- La app desplegada por **HTTPS** (Vercel).
-- Un plan de ChatGPT con **Developer Mode / MCP** (Plus, Pro, Business, Enterprise
-  o Edu; en beta y sólo en web al momento de escribir esto — verifícalo en OpenAI).
+- La app desplegada por **HTTPS** (Vercel) y con sus variables de entorno configuradas
+  (Supabase, etc.), y las migraciones aplicadas.
+- Un plan de ChatGPT con **Developer Mode** (beta): Plus, Pro, Business o Enterprise/Edu.
+  Se configura en **ChatGPT web** (chatgpt.com), no en la app del teléfono.
+
+> **Esto NO es la pantalla "Remote control" de Codex.** En la app de Codex, "Pair a new
+> device" y "SSH" sirven para que Codex ejecute código en una máquina remota; no tienen
+> relación con este conector. El MCP se agrega en los ajustes de **ChatGPT**.
 
 ## Pasos
 
-1. En la app, ve a **Ajustes → Conector ChatGPT (MCP)**.
-2. Pon un nombre y pulsa **Generar**. Copia el token (se muestra una sola vez).
-3. Anota la **URL del servidor**: `https://TU-DOMINIO/api/mcp`.
-4. En ChatGPT, activa **Developer Mode** y añade un servidor MCP:
-   - URL: la del paso 3.
-   - Autenticación: cabecera `Authorization: Bearer <token>` (el token del paso 2).
+1. En tu app, ve a **Ajustes → Conector ChatGPT (MCP)**, pon un nombre y pulsa **Generar**.
+   Copia el token (se muestra una sola vez) y anota la URL `https://TU-DOMINIO/api/mcp`.
+2. En **chatgpt.com** (navegador) abre **Settings → Apps & Connectors**
+   (antes "Connectors"; renombrado a "Apps" el 17-dic-2025).
+3. Entra en **Advanced settings** y activa **Developer Mode**.
+4. Crea un conector/app nuevo:
+   - **URL**: `https://TU-DOMINIO/api/mcp`
+   - **Autenticación**: `Authorization: Bearer <token>` (el del paso 1).
 5. Guarda. ChatGPT hará `initialize` y `tools/list`; deberías ver las herramientas.
+   En cada chat, habilita el conector desde el menú de Developer Mode.
 6. Prueba: "¿cuánto gané esta semana?" o "registra 3 horas, 87.35 y 54 millas hoy".
 
 ## Protocolo
